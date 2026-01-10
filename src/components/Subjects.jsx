@@ -38,7 +38,7 @@ const Subjects = () => {
                                 <div className="mt-auto">
                                     <Link
                                         to={`/course/${course.id}`}
-                                        className="inline-block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors duration-200"
+                                        className="inline-block w-full text-center px-6 py-2.5 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-500 hover:-translate-y-0.5 transition-all duration-200 shadow-sm hover:shadow-md"
                                     >
                                         View Subject
                                     </Link>

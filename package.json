@@ -4,9 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run frontend\" \"npm run backend\" --names \"frontend,backend\" --prefix-colors \"cyan,magenta\"",
-    "frontend": "vite",
-    "backend": "cd backend && npm start",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

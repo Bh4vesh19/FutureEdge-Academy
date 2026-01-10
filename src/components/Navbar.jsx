@@ -42,6 +42,7 @@ const Navbar = () => {
                     >
                         <span className="text-blue-600">Future</span>
                         <span className="text-teal-500">Edge</span>
+                        <span className="text-slate-800">.</span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -66,7 +67,7 @@ const Navbar = () => {
                         </button>
                         <button
                             onClick={() => scrollToSection('contact')}
-                            className="px-4 py-2 border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition-all duration-200 font-medium"
+                            className="px-6 py-2.5 rounded-full border border-blue-400 text-blue-600 bg-white hover:bg-blue-50 hover:-translate-y-0.5 transition-all duration-200 font-medium shadow-sm"
                         >
                             Contact
                         </button>
@@ -114,7 +115,7 @@ const Navbar = () => {
                             </button>
                             <button
                                 onClick={() => scrollToSection('contact')}
-                                className="mx-4 px-4 py-2 border-2 border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition-all duration-200 font-medium text-center"
+                                className="mx-4 px-6 py-2.5 rounded-full border border-blue-400 text-blue-600 bg-white hover:bg-blue-50 transition-all duration-200 font-medium text-center shadow-sm"
                             >
                                 Contact
                             </button>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import graduationChar from '../assets/graduation-character.png'
 import heroBg from '../assets/hero-bg.jpg'
+import VariableProximity from './VariableProximity'
 
 const Hero = () => {
     const scrollToSection = (sectionId) => {
@@ -36,15 +37,27 @@ const Hero = () => {
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         {/* Left Side - Text Content */}
                         <div className="space-y-6">
-                            {/* Headline - Dark slate for maximum readability */}
+                            {/* Headline - Interactive Variable Font Proximity */}
                             <motion.h1
-                                className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight"
+                                className="text-4xl md:text-5xl lg:text-6xl leading-[1.1] text-slate-800 variable-font tracking-tight max-w-[650px]"
                                 variants={fadeInUp}
                                 initial="initial"
                                 animate="animate"
                                 transition={{ duration: 0.45, ease: "easeOut" }}
+                                style={{
+                                    wordBreak: 'normal',
+                                    overflowWrap: 'break-word',
+                                }}
                             >
-                                A modern learning platform for students
+                                <VariableProximity
+                                    text="A modern learning platform for students"
+                                    className="block"
+                                    radius={120}
+                                    minWeight={400}
+                                    maxWeight={900}
+                                    minOpticalSize={14}
+                                    maxOpticalSize={40}
+                                />
                             </motion.h1>
 
                             {/* Subtext - Medium slate for readability */}
@@ -68,26 +81,43 @@ const Hero = () => {
                             >
                                 <button
                                     onClick={() => scrollToSection('subjects')}
-                                    className="px-6 py-3 bg-blue-600 text-white rounded-md font-medium hover:bg-blue-700 transition-all duration-200 hover:scale-[1.02] shadow-lg"
+                                    className="px-8 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-500 hover:-translate-y-0.5 transition-all duration-200 shadow-md hover:shadow-lg"
                                 >
                                     View Subjects
                                 </button>
                                 <button
                                     onClick={() => scrollToSection('explore-topics')}
-                                    className="px-6 py-3 border-2 border-blue-600 text-blue-600 bg-white rounded-md font-medium hover:bg-blue-600 hover:text-white transition-all duration-200 hover:scale-[1.02] shadow-md"
+                                    className="px-8 py-3 border border-blue-500 text-blue-600 bg-white rounded-full font-medium hover:bg-blue-50 hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
                                 >
                                     Explore Topics
                                 </button>
                             </motion.div>
                         </div>
 
-                        {/* Right Side - Graduation Character */}
-                        <div className="flex justify-center items-center bg-transparent">
-                            <img
-                                src={graduationChar}
-                                alt="Graduation character"
-                                className="block bg-transparent rounded-none object-contain w-auto max-h-[420px] drop-shadow-sm"
-                            />
+                        {/* Right Side - Graduation Character with Ground Shadow */}
+                        <div className="flex justify-center items-end bg-transparent relative">
+                            {/* Character Container */}
+                            <div className="relative">
+                                {/* Main Character - Bold & Prominent */}
+                                <img
+                                    src={graduationChar}
+                                    alt="Graduation character"
+                                    className="block bg-transparent rounded-none object-contain w-auto max-h-[480px] md:max-h-[500px] relative z-10"
+                                    style={{
+                                        filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.08))',
+                                    }}
+                                />
+
+                                {/* Elliptical Ground Shadow */}
+                                <div
+                                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[55%] h-4 md:h-5 rounded-[50%] z-0"
+                                    style={{
+                                        background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, transparent 60%)',
+                                        filter: 'blur(5px)',
+                                        transform: 'translateX(-50%) translateY(40%)',
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
