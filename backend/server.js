@@ -14,13 +14,14 @@ const cacheMiddleware = require('./middleware/cache')
 const app = express()
 const PORT = process.env.PORT || 3001
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173'
+const NODE_ENV = process.env.NODE_ENV || 'development'
 
 // Security middleware
 app.use(helmet())
 
-// CORS configuration - FIX #3: Proper CORS setup
+// CORS configuration - Allow frontend in production
 app.use(cors({
-    origin: FRONTEND_URL,
+    origin: NODE_ENV === 'production' ? '*' : FRONTEND_URL,
     credentials: true,
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']

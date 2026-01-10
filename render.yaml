@@ -1,4 +1,3 @@
-version: "1"
 services:
   - type: web
     name: futureedge-backend
@@ -8,13 +7,10 @@ services:
     branch: main
     rootDir: backend
     buildCommand: npm install
-    startCommand: npm start
+    startCommand: node server.js
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3001
-      - key: FRONTEND_URL
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
+        value: 10000
