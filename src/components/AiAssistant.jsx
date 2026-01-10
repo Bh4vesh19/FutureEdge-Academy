@@ -4,14 +4,20 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001
 const API_CHAT_URL = `${API_BASE_URL}/api/chat`
 const API_HEALTH_URL = `${API_BASE_URL}/health`
 
+// Log API URL once on module load
+console.log('[AiAssistant] API Base URL:', API_BASE_URL)
+console.log('[AiAssistant] Health URL:', API_HEALTH_URL)
+
 const AiAssistant = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState('')
     const [isTyping, setIsTyping] = useState(false)
     const [isOnline, setIsOnline] = useState(false)
+    const [connectionStatus, setConnectionStatus] = useState('connecting') // 'connecting', 'online', 'offline'
     const messagesEndRef = useRef(null)
     const lastRequestRef = useRef(0)
+    const healthCheckAttempted = useRef(false)
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -21,24 +27,72 @@ const AiAssistant = () => {
         scrollToBottom()
     }, [messages])
 
-    // Health check with auto-retry
+    // Health check - runs ONCE on mount with proper timeout
     useEffect(() => {
+        if (healthCheckAttempted.current) return
+
         const checkHealth = async () => {
+            console.log('[Health Check] Starting...')
+            setConnectionStatus('connecting')
+
             try {
+                // 20 second timeout for Render cold start
+                const controller = new AbortController()
+                const timeoutId = setTimeout(() => controller.abort(), 20000)
+
                 const res = await fetch(API_HEALTH_URL, {
-                    signal: AbortSignal.timeout(2000)
+                    signal: controller.signal
                 })
+
+                clearTimeout(timeoutId)
                 const data = await res.json()
-                setIsOnline(data.status === 'ok')
-            } catch {
+
+                console.log('[Health Check] Response:', data)
+
+                if (data.status === 'ok') {
+                    setIsOnline(true)
+                    setConnectionStatus('online')
+                    console.log('[Health Check] ✅ Backend ONLINE')
+                } else {
+                    setIsOnline(false)
+                    setConnectionStatus('offline')
+                    console.log('[Health Check] ⚠️ Backend returned non-OK status')
+                }
+            } catch (error) {
+                console.error('[Health Check] ❌ Failed:', error.message)
                 setIsOnline(false)
+                setConnectionStatus('offline')
             }
         }
 
+        healthCheckAttempted.current = true
         checkHealth()
-        const interval = setInterval(checkHealth, 3000)
-        return () => clearInterval(interval)
-    }, [])
+
+        // Set up periodic retry only if offline (every 10 seconds)
+        const retryInterval = setInterval(async () => {
+            if (!isOnline) {
+                console.log('[Health Check] Retrying...')
+                const controller = new AbortController()
+                const timeoutId = setTimeout(() => controller.abort(), 20000)
+
+                try {
+                    const res = await fetch(API_HEALTH_URL, { signal: controller.signal })
+                    clearTimeout(timeoutId)
+                    const data = await res.json()
+
+                    if (data.status === 'ok') {
+                        setIsOnline(true)
+                        setConnectionStatus('online')
+                        console.log('[Health Check] ✅ Reconnected!')
+                    }
+                } catch (error) {
+                    console.log('[Health Check] Retry failed, will try again...')
+                }
+            }
+        }, 10000)
+
+        return () => clearInterval(retryInterval)
+    }, [isOnline])
 
     useEffect(() => {
         if (isOpen && messages.length === 0) {
@@ -157,8 +211,8 @@ const AiAssistant = () => {
                         {messages.map((msg) => (
                             <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[85%] rounded-xl px-4 py-2 ${msg.type === 'user'
-                                        ? 'bg-blue-600 text-white rounded-br-sm'
-                                        : 'bg-white text-slate-800 border border-slate-200 rounded-bl-sm shadow-sm'
+                                    ? 'bg-blue-600 text-white rounded-br-sm'
+                                    : 'bg-white text-slate-800 border border-slate-200 rounded-bl-sm shadow-sm'
                                     }`}>
                                     <p className="text-sm whitespace-pre-wrap break-words">{msg.text}</p>
                                 </div>
